@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 /**
  * Generic logger service which Taskboard backend uses. Currently this service contains
  * following methods:
@@ -17,7 +19,7 @@
  * @param   {sails.model.user}  user        User object
  * @param   {Request}           request     Request object
  */
-exports.login = function(user, request) {
+exports.login = function login(user, request) {
     sails.log.verbose(__filename + ':' + __line + ' [Service.Logger.login() called]');
 
     // Parse detailed information from user-agent string
@@ -48,19 +50,35 @@ exports.login = function(user, request) {
 /**
  * Service method to create request log. This is fired from two places:
  *
- *  1)  \config\bootstrap.js    = logs socket requests
- *  2)  \config\http.js         = logs http requests
+ *  1) \config\bootstrap.js = logs socket requests
+ *  2) \config\http.js      = logs http requests
  *
- * Note that this method is called "silently" and if error occurs those are
- * just added to sails error log.
+ * Note that this method is called "silently" and if error occurs those are  just added to sails error log. Also note
+ * that this also needs to determine user id from authentication token (JWT) within some cases.
  *
  * @todo    Make clean of this collection, because this will be a huge one :D
  *
  * @param   {Request}   request Request object
  */
-exports.request = function(request) {
+exports.request = function request(request) {
     sails.log.verbose(__filename + ':' + __line + ' [Service.Logger.request() called]');
 
+    var userId;
+
+    // Token is found on request object (this means that it has been already verified)
+    if (request.token) {
+        userId = request.token;
+    } else { // Otherwise we need to determine token for log data
+        sails.services['token'].getToken(request, function verify(error, token) {
+            if (_.isEmpty(error) && token !== -1) {
+                userId = token;
+            } else {
+                userId = -1;
+            }
+        }, false);
+    }
+
+    // Create new log entry
     sails.models['requestlog']
         .create({
             method:     request.method,
@@ -71,9 +89,9 @@ exports.request = function(request) {
             body:       request.body || {},
             protocol:   request.protocol,
             ip:         request.ip,
-            user:       request.token || -1
+            user:       userId
         })
-        .exec(function(error) {
+        .exec(function exec(error) {
             if (error) {
                 sails.log.error(__filename + ':' + __line + ' [Failed to write request data to database]');
                 sails.log.error(error);
