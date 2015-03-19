@@ -8,48 +8,52 @@
  * All of these are wrapped to 'frontend.examples.chat' angular module.
  */
 (function() {
-    'use strict';
+  'use strict';
 
-    // Define frontend.examples.chat angular module
-    angular.module('frontend.examples.chat', []);
+  // Define frontend.examples.chat angular module
+  angular.module('frontend.examples.chat', []);
 
-    // Module configuration
-    angular.module('frontend.examples.chat')
-        .config(
-            [
-                '$stateProvider',
-                function($stateProvider) {
-                    $stateProvider
-                        // Chat
-                        .state('examples.chat', {
-                            url: '/examples/chat',
-                            views: {
-                                'content@': {
-                                    templateUrl: '/frontend/examples/chat/chat.html',
-                                    controller: 'ChatController',
-                                    resolve: {
-                                        _messages: [
-                                            'Moment',
-                                            'MessageModel',
-                                            function resolve(
-                                                Moment,
-                                                MessageModel
-                                            ) {
-                                                var parameters = {
-                                                    where: {
-                                                        createdAt: {'>': new Moment().format()}
-                                                    }
-                                                };
+  // Module configuration
+  angular.module('frontend.examples.chat')
+    .config([
+      '$stateProvider',
+      function config($stateProvider) {
+        $stateProvider
+          // Chat
+          .state('examples.chat', {
+            url: '/examples/chat',
+            views: {
+              'content@': {
+                templateUrl: '/frontend/examples/chat/chat.html',
+                controller: 'ChatController',
+                resolve: {
+                  _messages: [
+                    '$localStorage',
+                    'moment',
+                    'MessageModel',
+                    function resolve(
+                      $localStorage,
+                      moment,
+                      MessageModel
+                    ) {
+                      var parameters = {
+                        where: {
+                          createdAt: {
+                            '>': ($localStorage.chat && $localStorage.chat.time) ?
+                              $localStorage.chat.time : moment().format()
+                          }
+                        }
+                      };
 
-                                                return MessageModel.load(parameters);
-                                            }
-                                        ]
-                                    }
-                                }
-                            }
-                        })
-                    ;
+                      return MessageModel.load(parameters);
+                    }
+                  ]
                 }
-            ]
-        );
+              }
+            }
+          })
+        ;
+      }
+    ])
+  ;
 }());

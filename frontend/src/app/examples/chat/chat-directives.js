@@ -4,34 +4,33 @@
  * Note that this file should only contain directives and nothing else.
  */
 (function() {
-    'use strict';
+  'use strict';
 
-    /**
-     * Directive to resize "chat" screen to take all "possible" space on browser screen. This is just cruel thing to
-     * do, but it works like a charm.
-     */
-    angular.module('frontend.examples.chat')
-        .directive('chatScreen',
-            [
-                '$timeout',
-                function($timeout) {
-                    return {
-                        restrict: 'C',
-                        link: function(scope, element) {
-                            var resize = function() {
-                                var totalHeight = angular.element(document).height() - 170;
+  /**
+   * Directive to resize "chat" screen to take all "possible" space on browser screen. This is just cruel thing to
+   * do, but it works like a charm.
+   */
+  angular.module('frontend.examples.chat')
+    .directive('chatScreen', [
+      '$timeout', '$window',
+      function directive($timeout, $window) {
+        return {
+          restrict: 'C',
+          link: function link(scope, element) {
+            var resize = function resize() {
+              var totalHeight = angular.element($window).height() - 170;
 
-                                angular.element(element).css('height', totalHeight + 'px');
-                            };
+              angular.element(element).css('height', totalHeight + 'px');
+            };
 
-                            angular.element(window).resize(function() {
-                                $timeout(resize);
-                            });
+            angular.element($window).bind('resize', function onEvent() {
+              resize();
+            });
 
-                            resize();
-                        }
-                    };
-                }
-            ]
-        );
+            resize();
+          }
+        };
+      }
+    ])
+  ;
 }());

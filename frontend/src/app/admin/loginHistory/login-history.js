@@ -7,34 +7,72 @@
  * definitions for this module.
  */
 (function() {
-    'use strict';
+  'use strict';
 
-    // Define frontend.admin module.login-history
-    angular.module('frontend.admin.login-history', []);
+  // Define frontend.admin module.login-history
+  angular.module('frontend.admin.login-history', []);
 
-    // Module configuration
-    angular.module('frontend.admin.login-history')
-        .config(
-            [
-                '$stateProvider',
-                function($stateProvider) {
-                    $stateProvider
-                        .state('admin.login-history', {
-                            url: '/admin/loginHistory',
-                            views: {
-                                'content@': {
-                                    templateUrl: '/frontend/admin/loginHistory/index.html',
-                                    controller: 'LoginHistoryController',
-                                    resolve: {
-                                        _historyData: function resolve() {
-                                            return [];
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                    ;
+  // Module configuration
+  angular.module('frontend.admin.login-history')
+    .config([
+      '$stateProvider',
+      function config($stateProvider) {
+        $stateProvider
+          .state('admin.login-history', {
+            url: '/admin/loginHistory',
+            views: {
+              'content@': {
+                templateUrl: '/frontend/admin/loginHistory/index.html',
+                controller: 'LoginHistoryController',
+                resolve: {
+                  _items: [
+                    'ListConfig',
+                    'LoginHistoryModel',
+                    function resolve(
+                      ListConfig,
+                      LoginHistoryModel
+                    ) {
+                      var config = ListConfig.getConfig();
+
+                      var parameters = {
+                        limit: config.itemsPerPage,
+                        sort: 'createdAt DESC',
+                        populate: 'user'
+                      };
+
+                      return LoginHistoryModel.load(parameters);
+                    }
+                  ],
+                  _count: [
+                    'LoginHistoryModel',
+                    function resolve(LoginHistoryModel) {
+                      return LoginHistoryModel.count();
+                    }
+                  ],
+                  _statsBrowser: [
+                    'LoginHistoryModel',
+                    function resolve(LoginHistoryModel) {
+                      return LoginHistoryModel.statistics('Browser');
+                    }
+                  ],
+                  _statsOS: [
+                    'LoginHistoryModel',
+                    function resolve(LoginHistoryModel) {
+                      return LoginHistoryModel.statistics('OS');
+                    }
+                  ],
+                  _statsUser: [
+                    'LoginHistoryModel',
+                    function resolve(LoginHistoryModel) {
+                      return LoginHistoryModel.statistics('User');
+                    }
+                  ]
                 }
-            ]
-        );
+              }
+            }
+          })
+        ;
+      }
+    ])
+  ;
 }());

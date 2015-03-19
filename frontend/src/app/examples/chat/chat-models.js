@@ -5,32 +5,24 @@
  * services that wraps all things together.
  */
 (function() {
-    'use strict';
+  'use strict';
 
-    /**
-     * Model for Message API, this is used to wrap all Message objects specified actions and data change actions.
-     */
-    angular.module('frontend.examples.chat')
-        .factory('MessageModel',
-            [
-                'ModelFactory',
-                function MessageModel(ModelFactory) {
-                    // Endpoint definition for model
-                    var endpoint = 'message';
+  /**
+   * Model for Message API, this is used to wrap all Message objects specified actions and data change actions.
+   */
+  angular.module('frontend.examples.chat')
+    .factory('MessageModel', [
+      'DataModel',
+      function factory(DataModel) {
+        var model = new DataModel('message');
 
-                    // Get model
-                    var model = angular.copy(ModelFactory);
+        // Custom handler for created objects
+        model.handlerCreated = function handlerCreated(message){
+          this.objects.push(message.data);
+        };
 
-                    // Initialize model
-                    model.setEndpoint(endpoint);
-
-                    // Custom handler for created objects
-                    model.handlerCreated = function handlerCreated(message) {
-                        model.objects.push(message.data);
-                    };
-
-                    return model;
-                }
-            ]
-        );
+        return model;
+      }
+    ])
+  ;
 }());
