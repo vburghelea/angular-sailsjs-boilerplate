@@ -1,5 +1,4 @@
 # 'Boilerplate' for AngularJS + Sails.js 
-[![Build Status](https://travis-ci.org/tarlepp/angular-sailsjs-boilerplate.png?branch=master)](https://travis-ci.org/tarlepp/angular-sailsjs-boilerplate)
 
 ### Why?
 Modern web applications has separated front- and backend sides to use. This 'boilerplate' present one way to make
@@ -8,24 +7,33 @@ boilerplate, proper term would be 'example application'.
 
 ### Main goals of this boilerplate
 * Separate back- and frontend development
-* Authenticate with backend (possible multiple ways: local, github, twitter, etc.)
+* Authenticate with backend (possible multiple ways: local, ~~github, twitter,~~ etc.)
 * Power of AngularJS + WebSockets
 * Simple examples how to use these
 * Provide real start point of new applications
 
 ### Directory structure
-```
-backend/    = Sails.js server, just API nothing else
-frontend/   = Slush-angular, just frontend side
-```
+* ```backend``` = Sails.js server, just API nothing else [repository](https://github.com/tarlepp/angular-sailsjs-boilerplate-backend)
+* ```frontend``` = Angular SPA, just frontend side [repository](https://github.com/tarlepp/angular-sailsjs-boilerplate-frontend)
+
+Also note that these 'directories' are just submodules to another repos
 
 #### Backend
+[![Build Status](https://travis-ci.org/tarlepp/angular-sailsjs-boilerplate-backend.png?branch=master)](https://travis-ci.org/tarlepp/angular-sailsjs-boilerplate-backend)
+[![Dependency Status](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-backend.svg)](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-backend)
+[![devDependency Status](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-backend/dev-status.svg)](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-backend#info=devDependencies)
+
 For backend side this boilerplate uses Sails.js (imho awesome). See more info at https://github.com/balderdashy/sails
-I have just done some small tweaks to generic workflow of sails nothing else. 
+I have just done some small tweaks to generic workflow of sails nothing else. Backend side of this 'boilerplate' is 
+served on separate repository https://github.com/tarlepp/angular-sailsjs-boilerplate-backend
 
 #### Frontend
+[![Dependency Status](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-frontend.svg)](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-frontend)
+[![devDependency Status](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-frontend/dev-status.svg)](https://david-dm.org/tarlepp/angular-sailsjs-boilerplate-frontend#info=devDependencies)
+
 Boilerplate uses slush-angular for frontend (AngularJS using Google Angular App Structure Recommendations).
-See more info at https://github.com/slushjs/slush-angular This library is awesome to distribute frontend.
+See more info at https://github.com/slushjs/slush-angular This library is awesome to distribute frontend. Frontend side 
+of this 'boilerplate' is served on separate repository https://github.com/tarlepp/angular-sailsjs-boilerplate-frontend
 
 ### Used libraries, guides, etc.
 * Sails.js, http://sailsjs.org/
@@ -55,8 +63,15 @@ Navigate yourself to directory where you downloaded or cloned this repo and run 
 npm install
 </pre>
 
-That will install all needed packages for back- and frontend. You can also install those separately just by run that
-same command on <code>backend</code> or <code>frontend</code> directory.
+That will install all needed packages for back- and frontend. If this won't work you could try first to initialize
+back- and frontend submodules with following command:
+
+<pre>
+git submodule update --init --recursive
+</pre>
+
+Also you might need to run ```npm install``` command on each of those directories (<code>backend</code> and 
+<code>frontend</code>).
 
 #### Configuration
 You can configure your <code>backend</code> and <code>frontend</code> applications to use your environment specified 
@@ -88,7 +103,15 @@ If you're changing your backend API url to another than <code>http://localhost:1
 <code>frontend/config/config.json</code> with proper content on it. Use that example file as start.
 
 ### Running of this project
-You have to start both <code>backend</code> and <code>frontend</code> servers to run this project. 
+You have to start both <code>backend</code> and <code>frontend</code> servers to run this project. You can do this
+by running following command on your project root directory:
+
+<pre>
+npm start
+</pre>
+
+This will start back- and frontend applications for you. And if you need to start those separately see following docs
+about that.
 
 #### Backend
 <pre>
